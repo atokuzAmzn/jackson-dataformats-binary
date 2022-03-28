@@ -113,11 +113,25 @@ public class IonValueDeserializerTest {
 
     @Test
     public void shouldBeAbleToDeserializeNullValue() throws Exception {
-        IonValue ion = SYSTEM.newNull();
+        IonValueData source = new IonValueData();
+        source.put("a", null); // Serialized to IonNull, deserialized back to java null
+        source.put("e", ion("null.bool"));
+        source.put("f", ion("null.int"));
+        source.put("g", ion("null.float"));
+        source.put("h", ion("null.decimal"));
+        source.put("i", ion("null.timestamp"));
+        source.put("j", ion("null.string"));
+        source.put("k", ion("null.symbol"));
+        source.put("l", ion("null.blob"));
+        source.put("m", ion("null.clob"));
+        source.put("n", ion("null.struct"));
+        source.put("o", ion("null.list"));
+        source.put("p", ion("null.sexp"));
 
-        IonValue data = ION_VALUE_MAPPER.readValue(ion, IonValue.class);
+        IonValue data = ION_VALUE_MAPPER.writeValueAsIonValue(source);
+        IonValueData result = ION_VALUE_MAPPER.readValue(data, IonValueData.class);
 
-        assertEquals(ion, data);
+        assertEquals(source, result);
     }
 
     @Test
